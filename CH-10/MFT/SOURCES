@@ -1,0 +1,12 @@
+# +-------------------------------------+
+# |                                     |
+# | SOURCES                             |
+# |                                     |
+# +-------------------------------------+
+
+TARGETNAME=mft
+TARGETPATH=OBJ
+TARGETTYPE=DRIVER
+SOURCES=mft.c
+INCLUDES=..\inc
+MSC_WARNING_LEVEL=/W3

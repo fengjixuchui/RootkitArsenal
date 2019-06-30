@@ -1,0 +1,13 @@
+# +-------------------------------------+
+# |                                     |
+# | SOURCES                             |
+# |                                     |
+# +-------------------------------------+
+
+TARGETNAME=cchannel
+TARGETPATH=OBJ
+TARGETTYPE=DRIVER
+SOURCES=cchannel.c
+INCLUDES=..\inc
+MSC_WARNING_LEVEL=/W3
+TARGETLIBS=$(DDK_LIB_PATH)\netio.lib 

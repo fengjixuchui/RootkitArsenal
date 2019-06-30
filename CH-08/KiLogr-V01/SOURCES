@@ -1,0 +1,12 @@
+# +-------------------------------------+
+# |                                     |
+# | SOURCES                             |
+# |                                     |
+# +-------------------------------------+
+
+TARGETNAME=KiLogr
+TARGETPATH=OBJ
+TARGETTYPE=DRIVER
+SOURCES=KiLogr.c
+INCLUDES=..\inc
+MSC_WARNING_LEVEL=/W3

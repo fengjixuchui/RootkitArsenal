@@ -1,0 +1,42 @@
+# +----------------------------------------------------------------------+
+# |                                                                      |
+# | makefile.txt                                                         |
+# |                                                                      |
+# +----------------------------------------------------------------------+
+
+# [File Names]------------------------------------------------------------
+
+FILE		= PATCH
+ASM_FILE	= $(FILE).asm
+OBJ_FILE	= $(FILE).obj	
+EXE_FILE	= $(FILE).com
+
+LIST_FILE	= $(FILE).lst
+DEF_FILE	= $(FILE).def
+CRF_FILE	= $(FILE).crf
+
+ASM_FILES 	= $(ASM_FILE), $(OBJ_FILE), $(LIST_FILE), $(CRF_FILE)
+LINK_FILES	= $(OBJ_FILE), $(EXE_FILE),,,$(DEF_FILE)
+
+# [Tools]-----------------------------------------------------------------
+
+ASM 	= MASM.EXE
+LINK	= Link16.exe
+
+# [Tool arguments]--------------------------------------------------------
+
+ASM_FLAGS			= /t
+LINK_FLAGS 			= /NOLOGO /TINY $(LINK_FILES)    
+
+# [Description Blocks]----------------------------------------------------
+
+clean:
+	del *.lst
+	del *.crf       
+	del *.map       
+	del *.obj
+	del *.com	
+
+$(EXE_FILE): $(ASM_FILE) 
+	$(ASM)  $(ASM_FLAGS) $(ASM_FILES)
+	$(LINK) $(LINK_FLAGS)

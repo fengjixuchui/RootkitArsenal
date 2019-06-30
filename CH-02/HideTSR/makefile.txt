@@ -1,0 +1,41 @@
+# +----------------------------------------------------------------------+
+# |                                                                      |
+# | makefile.txt                                                         |
+# |                                                                      |
+# +----------------------------------------------------------------------+
+
+# [File Names]------------------------------------------------------------
+
+FILE		= HideTSR
+SRC_FILE	= $(FILE).c
+OBJ_FILE	= $(FILE).obj	
+ASM_FILE	= $(FILE).asm
+EXE_FILE	= $(FILE).exe
+
+# [Include Files]---------------------------------------------------------
+
+WC_PATH		= D:\WC
+WC_INC		= /i=$(WC_PATH)\H;$(WC_PATH)\H\NT
+INCLUDES	= $(WC_INC) 
+
+# [Tools]-----------------------------------------------------------------
+
+CC 	= WCL.EXE
+LIST 	= WDIS.EXE
+
+# [Tool arguments]--------------------------------------------------------
+
+CFLAGS 			= /q /cc /0 /bc /bt=dos /ms 
+LINK_FLAGS		= /lr /l=dos
+LIST_FLAGS		= /a /l=$(ASM_FILE) /s=$(SRC_FILE)
+
+# [Description Blocks]----------------------------------------------------
+
+clean:
+	del *.asm	# assembly code listing
+	del *.obj	# object code
+	del *.exe	# final product
+
+$(EXE_FILE): $(SRC_FILE) 
+	$(CC) $(SRC_FILE) $(CFLAGS) $(INCLUDES) $(LINK_FLAGS)
+	$(LIST) $(LIST_FLAGS) $(OBJ_FILE)

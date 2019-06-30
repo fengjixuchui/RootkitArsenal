@@ -1,0 +1,12 @@
+# +-------------------------------------+
+# |                                     |
+# | SOURCES                             |
+# |                                     |
+# +-------------------------------------+
+
+TARGETNAME=ffu
+TARGETPATH=OBJ
+TARGETTYPE=DRIVER
+SOURCES=kmd.c
+INCLUDES=..\inc
+MSC_WARNING_LEVEL=/W3

@@ -1,0 +1,95 @@
+# +---------------------------------------------------------------------------+
+# |                                                                           |
+# | SOURCES                                                                   |
+# |                                                                           |
+# +---------------------------------------------------------------------------+
+#
+# The WDK includes the build.exe utility as an alternative to nmake.exe
+#
+#   Leverages build environment settings provided by the WDK
+#		Insulates the developer from hardware-specific information
+#		
+#	Windows Driver Kits | WDK 6000 | Build Environments | Windows Vista and Windowse Server Longhorn
+#			Windows Vista and Windowse Server Longhorn x86 Checked Build Environment
+#			Windows Vista and Windowse Server Longhorn x86 Free Build Environment
+#		These menu items launch the setenv.bat batch file with certain arguments
+#		General invocation: setenv <directory> [fre|chk] [64|AMD64] [hal] [WLH|WXP|WNET|W2K] [bscmake]
+#			C:\Windows\System32\cmd.exe /k C:\WinDDK\6000\\bin\setenv.bat C:\WinDDK\6000\ chk WLH
+#			C:\Windows\System32\cmd.exe /k C:\WinDDK\6000\\bin\setenv.bat C:\WinDDK\6000\ fre WLH
+#		Checked vs. Free Build
+#			Checked build doesn't include any sort of optimization
+#			Checked build includes extra tests (i.e. ASSERT macros) to deal with errors
+#			(see "Checked v. Free section" in setenv.bat file) 
+#		Setenv.bat defines several dozen environmental variables (good example of how batch file should be written)
+#
+#		How Build utility works
+#			For the sake of simplicity (rootkits tend to be small), we'll assume a single source code tree
+#			Build looks in current directory for a file named "dirs" 
+#				Contains DIRS macro that specifies subdirectories that build will process
+#					DIRS=dir1 dir2 dir3 (directories are space/tab delimited)
+#			Assuming a single source tree, each subdirectory specified by dirs file will contain following:
+#				source code (C, asm, etc.)
+#				"sources" file
+#				"makefile" file
+#			Build will do the following:
+#				process sources file
+#				Automatically invoke nmake (which uses makefile to create dependencies and commands)
+#				nmake spawns the C compiler (cl.exe) and then spawns the linker (link.exe)   
+#					Can see details of this process via build{Type_Version_CPU}.log file
+#
+#		    makefile typically directs nmake to the master macro definition file (makefile.def)
+#				!INCLUDE $(NTMAKEENV)\makefile.def
+#			makefile.def (which leads to makefile.new)
+#					Defines a bunch of macros used to set compiler and linker switches 
+#
+# 			SOURCES contains macro definitions recognized by the Build utility
+#					Macros are defined using syntax:	MACRONAME=MacroVlaue
+#					Macros are referenced using syntax: $(MACRONAME)
+#				Tweak this file instead of nmake file to control build process
+# 				Search DDK help for "Build Utility Macros"
+#
+# [Required Macros]------------------------------------------------------------
+# There are five required macros for each sources file
+#	TARGETNAME: name of the binary (minus the file name extension)
+#	TARGETPATH: destination directory for all build products
+#	TARGETTYPE: type of executable being built (see DDK Help for details)
+#		PROGRAM		user-mode app			.exe
+#		LIBRARY		static user library		.lib
+#		DYNLINK		dynamic user library	.dll
+#		DRIVER		Kernel mode driver		.sys
+#	SOURCES: specifies files to be compiled
+#
+TARGETNAME=srv3
+TARGETPATH=..\..\..\bin
+TARGETTYPE=DRIVER
+SOURCES=kmd.c
+#
+# [Optional Macros]------------------------------------------------------------
+#
+# INCLUDES: location of the headers to be included
+#	Delimit entries in this list using a semicolon
+#	Path names can be absolute, or relative to the SOURCES file directory
+#	Header files specified here will be searched before the default paths
+#
+# TARGETLIBS: specify other libraries to link against
+#		Paths specified must be absolute
+#		Entries are space\tab delimited, Can use '\' to continue on next line
+#		<targetpath>\*\<library_name>
+#
+# MSC_WARNING_LEVEL: set compiler warning level
+#       /W0 Disable all warnings
+#	/W1 Display severe warnings
+#       /W4 Display all possible warnings (most sensitive)
+#	/WX Treats all compiler warnings as errors
+#	See http://technet.microsoft.com/en-us/library/f35ctcxw(VS.80).aspx
+# 
+INCLUDES=..\..\inc
+MSC_WARNING_LEVEL=/W3 /WX
+
+# Log files
+#	By default, build puts 3 log files in the directory from which it was invoked
+#	buildType_Version_Cpu.log	record of the commands invoked by NMAKE
+#	buildType_Version_Cpu.wrn	record of warnings generating during the build
+#	buildType_Version_Cpu.err	record of warnings generating during the build
+#
+#	buildchk_wlh_x86.log
